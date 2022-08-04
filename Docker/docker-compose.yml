@@ -1,0 +1,81 @@
+version: '3.5'
+
+x-services-common:
+  &services-common
+  networks:
+    - network-common
+
+services:
+  postgres:
+    <<: *services-common
+    container_name: cht_postgres_db
+    image: postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-cht}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      PGDATA: /data/postgres
+    volumes:
+       - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+  
+  pgadmin:
+    <<: *services-common
+    container_name: cht_pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+       - pgadmin:/root/.pgadmin
+
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    restart: unless-stopped
+  
+  airflow:
+    <<: *services-common
+    container_name: airflow
+    image: cht-airflow
+    build:
+      dockerfile: Dockerfile
+      context: ./airflow/docker/
+    environment: 
+      DBT_PROFILES_DIR: '/usr/app/cht-dbt'
+      DBT_PROJECT_DIR: '/usr/app/cht-dbt'
+    depends_on: 
+      - postgres
+    ports: 
+      - 8080:8080
+    command: >
+      bash -c "
+        airflow db init && 
+        airflow users create -r Admin -u airflow -e airflow@airflow.com -f Air -l Flow -p airflow && 
+        (airflow webserver & airflow scheduler)
+      "
+    volumes:
+      - ./airflow/dags:/root/airflow/dags
+      - ./airflow/plugins:/root/airflow/plugins
+      - ./cht-dbt:/usr/app/cht-dbt
+    restart: always 
+
+  jupyter-notebook:
+    <<: *services-common
+    container_name: jupyter_notebook
+    image: jupyter/pyspark-notebook
+    volumes:
+      - ../jupyther:/home/jovyan/work
+    ports: 
+      - 8888:8888
+
+networks:
+  network-common:
+    driver: bridge
+
+volumes:
+    postgres:
+    pgadmin:
+    jupyter:

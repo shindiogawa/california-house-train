@@ -1,0 +1,11 @@
+version: 2
+# salesforce Sources
+sources:
+
+  # SALESFORCE schema source
+  - name: california_house_training
+    database: cht
+    schema: public
+    #Original table names
+    tables:   
+      - name: cht_raw

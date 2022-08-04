@@ -1,4 +1,4 @@
-# California House Traning Project - by Rodrigo Ogawa
+# California House Train  Project - by Rodrigo Ogawa
 
 ## This is a mini ELT project where I'm using the following technologies:
 1. Docker (docker-compose)

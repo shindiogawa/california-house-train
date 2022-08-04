@@ -8,6 +8,11 @@
 5. Airflow
 6. PostgreSQL and PgAdmin
 
+## Requirements:
+* docker >= 17.12.0+
+* docker-compose
+
+
 ### Steps to make this project working NICE!
 
 Access the folder `Docker` and run
@@ -57,18 +62,6 @@ The db is `cht` and the table to ingest the csv file is `cht_raw`
 For DBT it's necessary to update the parameter `host` from the profile.yml file.
 The host is the ip of the docker network container above.
 
-# PostgreSQL and PgAdmin Docker Compose
-
-## Requirements:
-* docker >= 17.12.0+
-* docker-compose
-
-## User Guide
-* In the terminal go to the directory `cd edw`
-* It is necessary to create an .env file inside `airflow/` with the variables `AWS_REGION, BUCKET_AWS_ACCESS_KEY_ID ,BUCKET_AWS_SECRET_ACCESS_KEY`
-* Run `docker-compose up`
-* Check jupyter_notebook log to access with token
-
 ## Environment variables
 * `POSTGRES_USER` default **postgres**
 * `POSTGRES_PASSWORD` default **postgres**
@@ -80,9 +73,6 @@ The host is the ip of the docker network container above.
 * `AIRFLOW__CORE__LOAD_EXAMPLES` False
 * `AIRFLOW__CORE__LOAD_DEFAULT_CONNECTIONS` False
 * `AIRFLOW__CORE__FERNET_KEY` ${generate_fernet_key.py}
-* `AWS_REGION` **region-aws**
-* `BUCKET_AWS_ACCESS_KEY_ID` **s3-aws-access-key-id**
-* `BUCKET_AWS_SECRET_ACCESS_KEY` **s3-aws-secret-access-key**
 ## Access Postgres:
 * `localhost:5432`
 * **User:** postgres (default)
@@ -105,7 +95,6 @@ The host is the ip of the docker network container above.
 * **Password** `POSTGRES_PASSWORD`, default `postgres`
 
 ![image](https://user-images.githubusercontent.com/29340376/182907757-45a8ac16-0388-4616-8ae1-e97724a9fdb0.png)
-
 
 
 
